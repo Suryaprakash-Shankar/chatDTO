@@ -19,6 +19,19 @@ public class GlobalExceptionHandler {
         body.put("message", ex.getMessage());
         body.put("status", HttpStatus.NOT_FOUND.value());
 
+
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+
+    }
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationErrors(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+
+        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        body.put("message", errorMessage);
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }

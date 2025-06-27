@@ -1,10 +1,16 @@
 package com.sssp.crudop.controller;
 
+import com.sssp.crudop.DTO.CodemeganDTO;
+import com.sssp.crudop.Services.CodemeganDTOService;
 import com.sssp.crudop.exception.ResourceNotFoundException;
 import com.sssp.crudop.model.Codemegan;
 import com.sssp.crudop.repository.CodemeganRepo;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +21,14 @@ import java.util.List;
 public class CodemeganController {
 
     @Autowired
-    private CodemeganRepo codemeganRepo;
+    private CodemeganDTOService codemeganDTOService;
 
 //    Create New data using the post method
 
     @PostMapping("/NewData")
-    public Codemegan PostValue (@RequestBody Codemegan codemegan){
-        return codemeganRepo.save(codemegan);
+    public ResponseEntity<Codemegan> create(@Valid @RequestBody CodemeganDTO dto){
+        Codemegan saved = codemeganDTOService.create(dto);
+        return new ResponseEntity<>(saved,HttpStatus.CREATED);
     }
 
 //    Find all data in a Repo in database
@@ -29,7 +36,7 @@ public class CodemeganController {
     @GetMapping("/getall")
 
     public List<Codemegan> GetAll(){
-        return codemeganRepo.findAll();
+        return codemeganDTOService.getAllEmployee();
     }
 
 //    Find Data using ID
@@ -37,20 +44,15 @@ public class CodemeganController {
     @GetMapping("/findbyid/{Id}")
 
     public Codemegan FindByID(@PathVariable int Id){
-        return codemeganRepo.findById(Id).orElseThrow(()-> new ResourceNotFoundException("No Data or Id found at ID : " +Id));
+        return codemeganDTOService.GetEmployeeById(Id);
     }
 
 //    Update The value using ID
 
     @PutMapping("/update/{Id}")
 
-    public Codemegan UpdateValue(@PathVariable int Id , @RequestBody Codemegan UpdateValue){
-        Codemegan codemegan = codemeganRepo.findById(Id).orElseThrow(()-> new ResourceNotFoundException("Not found Id in database Id No: " +Id));
-        codemegan.setName(UpdateValue.getName());
-        codemegan.setAge(UpdateValue.getAge());
-        codemegan.setMobile(UpdateValue.getMobile());
-        codemegan.setAddress(UpdateValue.getAddress());
-        return codemeganRepo.save(codemegan);
+    public Codemegan UpdateValue(@PathVariable int Id , @RequestBody CodemeganDTO dto){
+        return codemeganDTOService.updateEmployee(Id,dto);
     }
 
 
@@ -60,16 +62,10 @@ public class CodemeganController {
     @DeleteMapping("/delete/{Id}")
 
     public String DeleteById (@PathVariable int Id){
-        codemeganRepo.deleteById(Id);
+        codemeganDTOService.deleteEmployee(Id);
         return "Deleted Id No : " +Id +"Successfully";
     }
 
-//    Delete All Data from Database
-    @DeleteMapping("/deleteAll")
-    public String DeleteAll(){
-        codemeganRepo.deleteAll();
-        return "All data removed from Database Successfully";
-    }
 
 }
 

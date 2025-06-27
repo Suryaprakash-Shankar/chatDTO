@@ -21,7 +21,7 @@ public class Codemegan {
     public String Name ;
 
     @Column(name = "AGE")
-    public String Age ;
+    public int Age ;
 
     @Column(name = "MOBILE NUMBER")
     public String Mobile;
