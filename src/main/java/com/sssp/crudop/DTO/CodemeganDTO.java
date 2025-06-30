@@ -16,7 +16,7 @@ public class CodemeganDTO {
 
 @NotBlank(message = "Name Should not be Empty")
     private String Name;
-@Min(value = 14 , message = "Age must greater ther 14 + age to access site")
+@Min(value = 14 , message = "Age must greater then 14 + age to access site")
     private int Age;
     @NotBlank(message = "Address should not be blank")
     private String Address;
